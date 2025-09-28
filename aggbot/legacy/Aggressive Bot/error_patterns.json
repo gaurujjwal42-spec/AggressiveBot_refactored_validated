@@ -1,0 +1,110 @@
+{
+    "rate_limit": {
+        "keywords": [
+            "rate limit",
+            "429",
+            "too many requests"
+        ],
+        "severity": "MEDIUM",
+        "diagnosis": "API rate limit exceeded",
+        "suggested_action": "Implement rate limiting or increase delay between requests"
+    },
+    "insufficient_funds": {
+        "keywords": [
+            "insufficient",
+            "balance",
+            "not enough"
+        ],
+        "severity": "HIGH",
+        "diagnosis": "Insufficient funds for the requested operation",
+        "suggested_action": "Add funds to the account or reduce order size"
+    },
+    "network_error": {
+        "keywords": [
+            "network",
+            "connection",
+            "timeout",
+            "unreachable"
+        ],
+        "severity": "MEDIUM",
+        "diagnosis": "Network connectivity issue",
+        "suggested_action": "Check internet connection and retry"
+    },
+    "authentication": {
+        "keywords": [
+            "auth",
+            "unauthorized",
+            "permission",
+            "401"
+        ],
+        "severity": "HIGH",
+        "diagnosis": "Authentication or authorization failure",
+        "suggested_action": "Verify API keys and permissions"
+    },
+    "invalid_parameter": {
+        "keywords": [
+            "invalid",
+            "parameter",
+            "argument",
+            "400"
+        ],
+        "severity": "MEDIUM",
+        "diagnosis": "Invalid parameter or argument",
+        "suggested_action": "Check input parameters for correctness"
+    },
+    "server_error": {
+        "keywords": [
+            "server",
+            "500",
+            "503",
+            "502",
+            "internal"
+        ],
+        "severity": "MEDIUM",
+        "diagnosis": "Server-side error",
+        "suggested_action": "Wait and retry later"
+    },
+    "market_closed": {
+        "keywords": [
+            "market closed",
+            "not trading",
+            "suspended"
+        ],
+        "severity": "MEDIUM",
+        "diagnosis": "Market is currently closed or trading is suspended",
+        "suggested_action": "Wait for market to open or check trading schedule"
+    },
+    "order_rejected": {
+        "keywords": [
+            "rejected",
+            "cancel",
+            "not accepted"
+        ],
+        "severity": "HIGH",
+        "diagnosis": "Order was rejected by the exchange",
+        "suggested_action": "Check order parameters and exchange rules"
+    },
+    "api_changed": {
+        "keywords": [
+            "deprecated",
+            "not found",
+            "method not allowed",
+            "404",
+            "405"
+        ],
+        "severity": "HIGH",
+        "diagnosis": "API endpoint may have changed or been deprecated",
+        "suggested_action": "Check API documentation for updates"
+    },
+    "data_error": {
+        "keywords": [
+            "data",
+            "parse",
+            "json",
+            "format"
+        ],
+        "severity": "MEDIUM",
+        "diagnosis": "Error parsing or processing data",
+        "suggested_action": "Check data format and processing logic"
+    }
+}

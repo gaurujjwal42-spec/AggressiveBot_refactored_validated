@@ -1,0 +1,35 @@
+# Environment variables# c:\Users\ug\OneDrive\Desktop\Aggressive Bot\main_bot.py (New Version)
+def run_bot(context):
+    # Access all initialized components from the context dictionary
+    logger = context["logger"]
+    config = context["config"]
+    risk_manager = context["risk_manager"]
+    
+    logger.log_info("Main bot loop is running with injected context.")
+    # ... rest of the bot's logic
+    pass
+# c:\Users\ug\OneDrive\Desktop\Aggressive Bot\main_bot.py (New Version)
+def run_bot(context):
+    # Access all initialized components from the context dictionary
+    logger = context["logger"]
+    config = context["config"]
+    risk_manager = context["risk_manager"]
+    
+    logger.log_info("Main bot loop is running with injected context.")
+    # ... rest of the bot's logic
+    pass
+
+.env
+
+# Python cache
+*.pyc
+__pycache__/
+
+# Generated files and logs
+/logs/
+*.db
+*.tmp
+*strategies_config.json
+trade_analysis_results.json
+first_100_trades.json
+dashboard_data.json

@@ -1,0 +1,56 @@
+Legacy de-duplication report
+Unique files: 76
+Total files:  124
+
+DUP e3b0c44298fc
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/Configuration.js
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/Dashboard.js
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/history.html
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/Layout.js
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/NotificationContext.js
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/Notifications.js
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/package.json
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/performance_alerts.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/run_production_validation.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/test_risk_manager.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/TradeDetailsModal.js
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/trade_logger.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/validate_strategies_final.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/validate_strategies_optimized.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/__init__.py
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/bot_20250901_233914.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/bot_20250902_000353.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/bot_20250902_124603.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/bot_20250902_165801.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/debug.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/errors_2025-08-26.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/errors_2025-08-27.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/errors_2025-08-29.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/errors_2025-08-30.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/errors_2025-08-31.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/errors_2025-09-01.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance_2025-08-26.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance_2025-08-27.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance_2025-08-29.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance_2025-08-30.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance_2025-08-31.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance_2025-09-01.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk_2025-08-26.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk_2025-08-27.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk_2025-08-29.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk_2025-08-30.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk_2025-08-31.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk_2025-09-01.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades_2025-08-26.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades_2025-08-27.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades_2025-08-29.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades_2025-08-30.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades_2025-08-31.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades_2025-09-01.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/api/api.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/performance/performance.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/risk/risk.log
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/logs/trades/trades.log
+DUP 9f885e2909fa
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/start_trading_bot.bat
+  - /mnt/data/aggbot_refactor/aggbot/legacy/Aggressive Bot/start_windows.bat

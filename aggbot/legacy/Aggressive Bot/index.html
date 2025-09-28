@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Bot Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="paper-trading-banner" style="display: none;">
+        PAPER TRADING MODE ACTIVE - NO REAL FUNDS ARE BEING USED
+    </div>
+    <div class="container">
+        <header>
+            <h1>🚀 Aggressive Trading Bot Dashboard</h1>
+            <div class="status-container">
+                <strong>Status:</strong> <span id="bot-status" class="status-box status-initializing">INITIALIZING</span>
+                <p id="bot-message">Bot is starting up...</p>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button id="pause-btn">Pause</button>
+            <button id="resume-btn">Resume</button>
+            <button id="quit-btn" class="quit">Quit</button>
+        </div>
+
+        <section class="summary">
+            <h2>📊 Performance Summary</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Total P&L</h3>
+                    <p id="total-pnl" class="pnl-neutral">$0.00</p>
+                </div>
+                <div class="card">
+                    <h3>Win Rate</h3>
+                    <p id="win-rate">0.0%</p>
+                </div>
+                <div class="card">
+                    <h3>Total Trades</h3>
+                    <p id="total-trades">0</p>
+                </div>
+                <div class="card">
+                    <h3>Active Trades</h3>
+                    <p id="active-trades">0</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="charts">
+            <div class="chart-container">
+                <h2>Portfolio Value Over Time</h2>
+                <canvas id="portfolio-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>P&L Distribution by Symbol</h2>
+                <canvas id="pnl-chart"></canvas>
+            </div>
+        </section>
+
+        <section class="config">
+            <h2>⚙️ Real-time Configuration</h2>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label for="cfg-tp">Take Profit (%)</label>
+                    <input type="number" id="cfg-tp" step="0.1">
+                </div>
+                <div class="config-item">
+                    <label for="cfg-sl">Stop Loss (%)</label>
+                    <input type="number" id="cfg-sl" step="0.1">
+                </div>
+                <div class="config-item">
+                    <label for="cfg-tsl-act">Trail Activation (%)</label>
+                    <input type="number" id="cfg-tsl-act" step="0.1">
+                </div>
+                <div class="config-item">
+                    <label for="cfg-tsl">Trailing Stop (%)</label>
+                    <input type="number" id="cfg-tsl" step="0.1">
+                </div>
+                <div class="config-item">
+                    <label for="cfg-trade-usdt">Base Trade (USDT)</label>
+                    <input type="number" id="cfg-trade-usdt" step="1">
+                </div>
+                <div class="config-item">
+                    <label for="cfg-max-trades">Max Open Trades</label>
+                    <input type="number" id="cfg-max-trades" step="1">
+                </div>
+            </div>
+            <div class="config-controls">
+                <button id="save-config-btn">Save Changes</button>
+                <span id="config-status"></span>
+            </div>
+        </section>
+
+        <section class="positions">
+            <h2>🔥 Active Positions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Entry Price</th>
+                        <th>Current Price</th>
+                        <th>Invested</th>
+                        <th>Unrealized P&L</th>
+                        <th>P&L %</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="positions-table">
+                    <!-- Rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section class="history">
+            <h2>📈 Recent Trade History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Symbol</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>P&L</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table">
+                    <!-- Rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const botStatus = document.getElementById('bot-status');
+            const botMessage = document.getElementById('bot-message');
+            const totalPnl = document.getElementById('total-pnl');
+            const winRate = document.getElementById('win-rate');
+            const totalTrades = document.getElementById('total-trades');
+            const activeTrades = document.getElementById('active-trades');
+            const positionsTable = document.getElementById('positions-table');
+            const historyTable = document.getElementById('history-table');
+            const configStatus = document.getElementById('config-status');
+
+            let portfolioChart;
+            let pnlChart;
+
+            function formatPnl(pnl) {
+                const value = parseFloat(pnl).toFixed(2);
+                const sign = pnl > 0 ? '+' : '';
+                const pnlClass = pnl > 0 ? 'pnl-profit' : pnl < 0 ? 'pnl-loss' : 'pnl-neutral';
+                return `<span class="${pnlClass}">${sign}$${value}</span>`;
+            }
+
+            function initCharts() {
+                const portfolioCtx = document.getElementById('portfolio-chart').getContext('2d');
+                portfolioChart = new Chart(portfolioCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Portfolio Value (USD)',
+                            data: [],
+                            borderColor: '#4dabf7',
+                            backgroundColor: 'rgba(77, 171, 247, 0.2)',
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: { color: '#e0e0e0' },
+                                grid: { color: '#333' }
+                            },
+                            x: {
+                                ticks: { color: '#e0e0e0' },
+                                grid: { color: '#333' }
+                            }
+                        },
+                        plugins: { legend: { labels: { color: '#e0e0e0' } } }
+                    }
+                });
+
+                const pnlCtx = document.getElementById('pnl-chart').getContext('2d');
+                pnlChart = new Chart(pnlCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Realized P&L (USD)',
+                            data: [],
+                            backgroundColor: [],
+                            borderColor: [],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        scales: {
+                            y: {
+                                ticks: { color: '#e0e0e0' },
+                                grid: { color: '#333' }
+                            },
+                            x: {
+                                ticks: { color: '#e0e0e0' },
+                                grid: { color: '#333' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+
+            async function updateDashboard() {
+                try {
+                    const response = await fetch('/api/data');
+                    const data = await response.json();
+
+                    // Status
+                    botStatus.textContent = data.bot_status.status;
+                    botStatus.className = `status-box status-${data.bot_status.status.toLowerCase()}`;
+                    botMessage.textContent = data.bot_status.message;
+
+                    // Summary
+                    totalPnl.innerHTML = formatPnl(data.performance.total_pnl);
+                    winRate.textContent = `${data.performance.win_rate.toFixed(1)}%`;
+                    totalTrades.textContent = data.performance.total_trades;
+                    activeTrades.textContent = data.positions.length;
+
+                    // Positions
+                    positionsTable.innerHTML = '';
+                    if (data.positions.length === 0) {
+                        positionsTable.innerHTML = '<tr><td colspan="6">No active positions.</td></tr>';
+                    } else {
+                        data.positions.forEach(pos => {
+                            const pnlPct = pos.usdt_invested > 0 ? (pos.unrealized_pnl / pos.usdt_invested) * 100 : 0;
+                            const row = `
+                                <tr>
+                                    <td>${pos.symbol}</td>
+                                    <td>$${pos.entry_price.toFixed(6)}</td>
+                                    <td>$${pos.current_price.toFixed(6)}</td>
+                                    <td>$${pos.usdt_invested.toFixed(2)}</td>
+                                    <td>${formatPnl(pos.unrealized_pnl)}</td>
+                                    <td class="${pnlPct > 0 ? 'pnl-profit' : 'pnl-loss'}">${pnlPct.toFixed(2)}%</td>
+                                    <td><button class="sell-btn" data-position-id="${pos.id}">Sell</button></td>
+                                </tr>`;
+                            positionsTable.innerHTML += row;
+                        });
+                    }
+
+                    // History
+                    historyTable.innerHTML = '';
+                     if (data.trade_history.length === 0) {
+                        historyTable.innerHTML = '<tr><td colspan="5">No trade history yet.</td></tr>';
+                    } else {
+                        data.trade_history.forEach(trade => {
+                            const row = `
+                                <tr>
+                                    <td>${new Date(trade.timestamp).toLocaleTimeString()}</td>
+                                    <td>${trade.symbol}</td>
+                                    <td>${trade.type}</td>
+                                    <td>$${trade.price.toFixed(6)}</td>
+                                    <td>${formatPnl(trade.pnl)}</td>
+                                </tr>`;
+                            historyTable.innerHTML += row;
+                        });
+                    }
+
+                    // Charts
+                    // Portfolio History Chart
+                    const portfolioLabels = data.portfolio_history.map(p => new Date(p.time).toLocaleTimeString());
+                    const portfolioValues = data.portfolio_history.map(p => p.value);
+                    portfolioChart.data.labels = portfolioLabels;
+                    portfolioChart.data.datasets[0].data = portfolioValues;
+                    portfolioChart.update();
+
+                    // P&L Distribution Chart
+                    const pnlLabels = Object.keys(data.pnl_distribution);
+                    const pnlValues = Object.values(data.pnl_distribution);
+                    pnlChart.data.labels = pnlLabels;
+                    pnlChart.data.datasets[0].data = pnlValues;
+                    pnlChart.data.datasets[0].backgroundColor = pnlValues.map(pnl => pnl >= 0 ? 'rgba(102, 187, 106, 0.6)' : 'rgba(239, 83, 80, 0.6)');
+                    pnlChart.data.datasets[0].borderColor = pnlValues.map(pnl => pnl >= 0 ? '#66bb6a' : '#ef5350');
+                    pnlChart.update();
+
+                    // Show paper trading banner if active
+                    if (data.is_paper_trading) {
+                        document.getElementById('paper-trading-banner').style.display = 'block';
+                    }
+
+
+                } catch (error) {
+                    console.error('Error fetching dashboard data:', error);
+                    botStatus.textContent = 'DISCONNECTED';
+                    botStatus.className = 'status-box status-error';
+                    botMessage.textContent = 'Could not connect to the bot backend.';
+                }
+            }
+
+            async function sendControlCommand(command) {
+                await fetch('/api/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command })
+                });
+                updateDashboard();
+            }
+
+            async function manualSell(positionId) {
+                if (!confirm(`Are you sure you want to sell position ${positionId}? This action cannot be undone.`)) {
+                    return;
+                }
+                try {
+                    const response = await fetch('/api/sell', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ position_id: positionId })
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        alert(`Sell failed: ${result.message}`);
+                    }
+                    updateDashboard();
+                } catch (error) {
+                    console.error('Error sending sell command:', error);
+                    alert('An error occurred while trying to sell the position.');
+                }
+            }
+
+            async function loadConfig() {
+                try {
+                    const response = await fetch('/api/config');
+                    const config = await response.json();
+                    document.getElementById('cfg-tp').value = config.TAKE_PROFIT_PCT;
+                    document.getElementById('cfg-sl').value = config.STOP_LOSS_PCT;
+                    document.getElementById('cfg-tsl-act').value = config.TRAILING_STOP_ACTIVATION_PCT;
+                    document.getElementById('cfg-tsl').value = config.TRAILING_STOP_PCT;
+                    document.getElementById('cfg-trade-usdt').value = config.TRADE_USDT;
+                    document.getElementById('cfg-max-trades').value = config.MAX_OPEN_TRADES;
+                } catch (error) {
+                    console.error('Error loading config:', error);
+                    configStatus.textContent = 'Error loading config.';
+                    configStatus.style.color = '#ef5350';
+                }
+            }
+
+            async function saveConfig() {
+                const newConfig = {
+                    TAKE_PROFIT_PCT: parseFloat(document.getElementById('cfg-tp').value),
+                    STOP_LOSS_PCT: parseFloat(document.getElementById('cfg-sl').value),
+                    TRAILING_STOP_ACTIVATION_PCT: parseFloat(document.getElementById('cfg-tsl-act').value),
+                    TRAILING_STOP_PCT: parseFloat(document.getElementById('cfg-tsl').value),
+                    TRADE_USDT: parseFloat(document.getElementById('cfg-trade-usdt').value),
+                    MAX_OPEN_TRADES: parseInt(document.getElementById('cfg-max-trades').value)
+                };
+
+                try {
+                    configStatus.textContent = 'Saving...';
+                    configStatus.style.color = '#ffc107';
+                    const response = await fetch('/api/config', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newConfig)
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        configStatus.textContent = 'Settings saved successfully!';
+                        configStatus.style.color = '#66bb6a';
+                    } else { throw new Error(result.message || 'Failed to save.'); }
+                } catch (error) {
+                    console.error('Error saving config:', error);
+                    configStatus.textContent = `Error: ${error.message}`;
+                    configStatus.style.color = '#ef5350';
+                }
+                setTimeout(() => { configStatus.textContent = ''; }, 3000);
+            }
+
+            document.getElementById('pause-btn').addEventListener('click', () => sendControlCommand('pause'));
+            document.getElementById('resume-btn').addEventListener('click', () => sendControlCommand('resume'));
+            document.getElementById('quit-btn').addEventListener('click', () => {
+                if(confirm('Are you sure you want to shut down the bot?')) { sendControlCommand('quit'); }
+            });
+            document.getElementById('save-config-btn').addEventListener('click', saveConfig);
+
+            positionsTable.addEventListener('click', function(event) {
+                if (event.target && event.target.classList.contains('sell-btn')) {
+                    const positionId = event.target.getAttribute('data-position-id');
+                    manualSell(positionId);
+                }
+            });
+
+            setInterval(updateDashboard, 2000); // Refresh every 2 seconds
+            initCharts();
+            loadConfig();
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

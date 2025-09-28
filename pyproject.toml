@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aggressive-bot"
+version = "0.1.0"
+description = "Aggressive trading bot — Windows-first deployment"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "pydantic>=2.8",
+  "python-dotenv>=1.0",
+  "typer>=0.12",
+  "rich>=13.7",
+  "loguru>=0.7",
+  "requests>=2.32",
+  "numpy>=1.26",
+  "pandas>=2.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3", "pytest-cov>=5.0", "ruff>=0.6", "black>=24.8", "mypy>=1.11", "pyinstaller>=6.10"]
+
+[project.scripts]
+aggbot = "aggbot.__main__:app"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+select = ["E","F","I","UP","B","PLC","PLE","PLW"]
+ignore = ["E402"]
+extend-exclude = ["build","dist",".venv"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-q --disable-warnings"
+testpaths = ["tests"]

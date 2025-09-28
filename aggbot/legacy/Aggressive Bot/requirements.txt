@@ -1,0 +1,23 @@
+# Core runtime
+eventlet==0.36.1
+Flask==3.0.3
+python-dotenv==1.0.1
+flask-cors==4.0.1
+Flask-SocketIO==5.3.6
+requests==2.32.3
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.4.2
+joblib==1.4.2
+
+# Web3 + crypto
+web3==6.20.1
+eth-account==0.12.2
+
+# Optional (if used by helpers)
+typing-extensions==4.12.2
+matplotlib==3.9.0
+pandas-ta==0.3.14b
+
+# Testing
+pytest==8.0.0
